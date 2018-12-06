@@ -6,7 +6,7 @@ Tool for manually importing data into Event Data.
 
 For converting Scholix link packages into Events.
 
-From a newline-delimited file of JSON-LD-serialized Scholix objects, produce a corresponding file of newline-separated Events. In both the input and the output files newline characters within the JSON-LD message should be encoded with escape sequence, not represented as literals.
+From a newline-delimited file of NDJSON-serialized Scholix objects, produce a corresponding file of newline-separated Events. In both the input and the output files newline characters within the JSON-LD message should be encoded with escape sequence, not represented as literals.
 
     lein run scholix-file «input-file» «output-file»
 
@@ -18,7 +18,7 @@ Once this is done, you can use the Upload task to send them into the Bus.
 
 ## Upload
 
-Upload a JSON-LD file of Events to the Event Bus. 
+Upload a NDJSON file of Events to the Event Bus. 
 
     lein run upload «input-files»
     
