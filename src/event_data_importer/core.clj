@@ -1,5 +1,6 @@
 (ns event-data-importer.core
   (:require [event-data-importer.scholix :refer [scholix->event]]
+            [event-data-common.event-bus :as bus]
             [clojure.tools.logging :as log]
             [clojure.data.json :as json]
             [config.core :refer [env]]
@@ -32,11 +33,22 @@
       ; Same filename in corresponding output dir.
       (scholix-file f (file output-dir (.getName f))))))
 
+(defn upload
+  [input-files]
+  (log/info "Upload" (count input-files) "files")
+  (doseq [input-file input-files]
+    (log/info "Uploading" input-file)
+      (with-open [in (reader input-file)]
+        (let [events (->> in line-seq (map #(json/read-str % :key-fn keyword)))]
+          (doseq [event events]
+            (bus/post-event event))))))
+
 (defn -main
   [& args]
   (condp = (first args)
     "scholix-file" (scholix-file (nth args 1) (nth args 2))
     "scholix-dir" (scholix-dir (nth args 1) (nth args 2))
+    "upload" (upload (rest args))
 
     :default (log/error "Didn't recognise command.")))
 
